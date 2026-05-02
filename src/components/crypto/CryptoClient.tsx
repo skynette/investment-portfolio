@@ -8,6 +8,7 @@ import { TransactionTable } from "./TransactionTable";
 import { AddTransactionDialog } from "./AddTransactionDialog";
 import { ImportCsvDialog } from "./ImportCsvDialog";
 import { CryptoExportButton } from "./ExportButton";
+import { CryptoCopyButton } from "./CopyButton";
 import { formatPercent } from "@/lib/format";
 import { MoneyDisplay, PrivateText } from "@/components/dashboard/MoneyDisplay";
 import { cn } from "@/lib/utils";
@@ -58,6 +59,7 @@ export function CryptoClient({
           <p className="text-sm text-muted-foreground">{holdings.length} holdings · {summary.txCount} transactions</p>
         </div>
         <div className="flex items-center gap-2">
+          <CryptoCopyButton holdings={holdings} summary={summary} />
           <CryptoExportButton />
           <ImportCsvDialog />
           <AddTransactionDialog assets={assets} />

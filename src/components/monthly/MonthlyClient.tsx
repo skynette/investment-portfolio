@@ -9,6 +9,7 @@ import { MonthlyTable } from "./MonthlyTable";
 import { CategoryManager } from "./CategoryManager";
 import { AddRowMenu } from "./AddRowMenu";
 import { MonthlyExportButton } from "./ExportButton";
+import { MonthlyCopyButton } from "./CopyButton";
 import { formatPercent } from "@/lib/format";
 import { MoneyDisplay, PrivateText } from "@/components/dashboard/MoneyDisplay";
 import { formatYearMonth, type YearMonth } from "@/lib/dates";
@@ -64,6 +65,7 @@ export function MonthlyClient({
         </div>
         <div className="flex items-center gap-2">
           <MonthSelector value={initialYearMonth} onChange={onChangeMonth} />
+          <MonthlyCopyButton rows={rows} ym={initialYearMonth} />
           <MonthlyExportButton />
           <AddRowMenu
             year={initialYearMonth.year}
