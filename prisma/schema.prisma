@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Category {
+  id                   Int            @id @default(autoincrement())
+  name                 String         @unique
+  currency             String         @default("NGN")
+  defaultMonthlyTarget Decimal        @default(0)
+  isActive             Boolean        @default(true)
+  createdAt            DateTime       @default(now())
+  monthlyEntries       MonthlyEntry[]
+}
+
+model MonthlyEntry {
+  id         Int      @id @default(autoincrement())
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  year       Int
+  month      Int
+  target     Decimal  @default(0)
+  actual     Decimal  @default(0)
+  note       String?
+  updatedAt  DateTime @updatedAt
+
+  @@unique([categoryId, year, month])
+  @@index([year, month])
+}
+
+model CryptoAsset {
+  id           Int                 @id @default(autoincrement())
+  symbol       String              @unique
+  name         String
+  cmcSymbol    String
+  isActive     Boolean             @default(true)
+  transactions CryptoTransaction[]
+}
+
+model CryptoTransaction {
+  id           Int         @id @default(autoincrement())
+  assetId      Int
+  asset        CryptoAsset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  occurredAt   DateTime
+  type         String
+  pricePerUnit Decimal?
+  amount       Decimal
+  totalUsd     Decimal?
+  fee          Decimal?
+  feeCurrency  String?
+  note         String?
+
+  @@unique([assetId, occurredAt, type, amount, totalUsd], name: "tx_dedupe")
+  @@index([assetId, occurredAt])
+}
+
+model FxRate {
+  id        Int      @id @default(autoincrement())
+  base      String
+  quote     String
+  rate      Decimal
+  fetchedAt DateTime @default(now())
+
+  @@index([base, quote, fetchedAt])
+}
+
+model Setting {
+  key   String @id
+  value String
+}
