@@ -8,7 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { MoneyDisplay } from "@/components/dashboard/MoneyDisplay";
+import { MoneyDisplay, PrivateText } from "@/components/dashboard/MoneyDisplay";
 import { deleteTransaction } from "@/server/actions/transactions";
 import type { TxRow } from "./CryptoClient";
 
@@ -70,7 +70,7 @@ export function TransactionTable({ transactions }: { transactions: TxRow[] }) {
                 <TableCell>{new Date(t.occurredAt).toLocaleString()}</TableCell>
                 <TableCell>{t.symbol}</TableCell>
                 <TableCell><span className="capitalize">{t.type}</span></TableCell>
-                <TableCell className="text-right">{t.amount.toLocaleString("en-US", { maximumFractionDigits: 6 })}</TableCell>
+                <TableCell className="text-right"><PrivateText>{t.amount.toLocaleString("en-US", { maximumFractionDigits: 6 })}</PrivateText></TableCell>
                 <TableCell className="text-right">{t.pricePerUnit === null ? "—" : <MoneyDisplay amount={t.pricePerUnit} from="USD" />}</TableCell>
                 <TableCell className="text-right">{t.totalUsd === null ? "—" : <MoneyDisplay amount={t.totalUsd} from="USD" />}</TableCell>
                 <TableCell><Button variant="ghost" size="icon" onClick={() => remove(t.id)}><Trash2 className="h-4 w-4" /></Button></TableCell>

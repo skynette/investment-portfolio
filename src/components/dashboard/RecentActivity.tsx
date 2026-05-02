@@ -2,7 +2,7 @@
 
 import { ArrowDownLeft, ArrowUpRight, Coins, Wallet } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MoneyDisplay } from "./MoneyDisplay";
+import { MoneyDisplay, PrivateText } from "./MoneyDisplay";
 import type { Currency } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -52,7 +52,9 @@ export function RecentActivity({ items }: { items: ActivityItem[] }) {
                       ) : (
                         <ArrowUpRight className="h-3 w-3 text-rose-400" />
                       )}
-                      {item.amount.toLocaleString("en-US", { maximumFractionDigits: 4 })} {item.symbol}
+                      <PrivateText className="text-sm">
+                        {item.amount.toLocaleString("en-US", { maximumFractionDigits: 4 })}
+                      </PrivateText>{" "}{item.symbol}
                     </span>
                   )}
                 </div>

@@ -6,6 +6,7 @@ import { LayoutDashboard, CalendarDays, Coins, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "./ThemeToggle";
 import { CurrencyToggle } from "./CurrencyToggle";
+import { BalanceVisibilityToggle } from "./BalanceVisibilityToggle";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -42,9 +43,12 @@ export function Sidebar() {
           );
         })}
       </nav>
-      <div className="border-t p-3 space-y-2">
-        <p className="text-xs uppercase tracking-wide text-muted-foreground">Display currency</p>
-        <CurrencyToggle />
+      <div className="border-t p-3 space-y-3">
+        <BalanceVisibilityToggle />
+        <div className="space-y-2">
+          <p className="text-xs uppercase tracking-wide text-muted-foreground">Display currency</p>
+          <CurrencyToggle />
+        </div>
       </div>
     </aside>
   );

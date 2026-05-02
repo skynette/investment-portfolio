@@ -4,7 +4,7 @@ import { ArrowDownRight, ArrowUpRight, Wallet, Target, Coins, PiggyBank } from "
 import { Card, CardContent } from "@/components/ui/card";
 import { formatPercent } from "@/lib/format";
 import { useDisplayCurrency, convert } from "@/components/layout/CurrencyContext";
-import { MoneyDisplay } from "./MoneyDisplay";
+import { MoneyDisplay, PrivateText } from "./MoneyDisplay";
 import { cn } from "@/lib/utils";
 
 export function KpiCards({
@@ -54,7 +54,7 @@ export function KpiCards({
       label: "Month progress",
       value: (
         <div className="flex items-end gap-2">
-          <span className="text-3xl font-bold font-mono">{formatPercent(monthPct)}</span>
+          <PrivateText fallback="••%" className="text-3xl font-bold">{formatPercent(monthPct)}</PrivateText>
           {monthPct >= 1 ? (
             <ArrowUpRight className="mb-1 h-5 w-5 text-emerald-500" />
           ) : null}
@@ -73,7 +73,7 @@ export function KpiCards({
           cryptoPLUsd < 0 ? "text-rose-400" : "text-emerald-400",
         )}>
           {cryptoPLUsd < 0 ? <ArrowDownRight className="h-3 w-3" /> : <ArrowUpRight className="h-3 w-3" />}
-          {formatPercent(cryptoPLPct)} all-time
+          <PrivateText fallback="••%" className="text-xs">{formatPercent(cryptoPLPct)}</PrivateText> all-time
         </span>
       ),
       accent: "green",

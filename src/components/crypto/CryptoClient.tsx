@@ -9,7 +9,7 @@ import { AddTransactionDialog } from "./AddTransactionDialog";
 import { ImportCsvDialog } from "./ImportCsvDialog";
 import { CryptoExportButton } from "./ExportButton";
 import { formatPercent } from "@/lib/format";
-import { MoneyDisplay } from "@/components/dashboard/MoneyDisplay";
+import { MoneyDisplay, PrivateText } from "@/components/dashboard/MoneyDisplay";
 import { cn } from "@/lib/utils";
 
 export type Holding = {
@@ -92,10 +92,10 @@ export function CryptoClient({
         <SummaryCard
           label="Return"
           value={
-            <span className={cn(
-              "text-3xl font-bold font-mono tabular-nums",
+            <PrivateText fallback="••%" className={cn(
+              "text-3xl font-bold",
               positive ? "text-emerald-400" : "text-rose-400",
-            )}>{formatPercent(summary.plPct)}</span>
+            )}>{formatPercent(summary.plPct)}</PrivateText>
           }
           icon={TrendingUp}
           accent={positive ? "green" : "red"}

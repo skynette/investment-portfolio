@@ -10,7 +10,7 @@ import { CategoryManager } from "./CategoryManager";
 import { AddRowMenu } from "./AddRowMenu";
 import { MonthlyExportButton } from "./ExportButton";
 import { formatPercent } from "@/lib/format";
-import { MoneyDisplay } from "@/components/dashboard/MoneyDisplay";
+import { MoneyDisplay, PrivateText } from "@/components/dashboard/MoneyDisplay";
 import { formatYearMonth, type YearMonth } from "@/lib/dates";
 import { cn } from "@/lib/utils";
 
@@ -93,7 +93,7 @@ export function MonthlyClient({
         />
         <SummaryCard
           label="Progress"
-          value={<span className="text-3xl font-bold font-mono tabular-nums">{formatPercent(pct)}</span>}
+          value={<PrivateText fallback="••%" className="text-3xl font-bold">{formatPercent(pct)}</PrivateText>}
           icon={TrendingUp}
           accent={pct >= 1 ? "green" : "amber"}
           progress={pct}

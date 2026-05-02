@@ -7,11 +7,14 @@ type Ctx = {
   display: Currency;
   setDisplay: (c: Currency) => void;
   fxRate: number | null;
+  showBalances: boolean;
+  setShowBalances: (v: boolean) => void;
 };
 
 const CurrencyContext = createContext<Ctx | null>(null);
 
-const STORAGE_KEY = "portfolio.displayCurrency";
+const STORAGE_CURRENCY = "portfolio.displayCurrency";
+const STORAGE_BALANCES = "portfolio.showBalances";
 
 export function CurrencyProvider({
   fxRate,
@@ -21,19 +24,28 @@ export function CurrencyProvider({
   children: React.ReactNode;
 }) {
   const [display, setDisplayState] = useState<Currency>("NGN");
+  const [showBalances, setShowBalancesState] = useState<boolean>(true);
 
   useEffect(() => {
-    const stored = typeof window !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null;
-    if (stored === "NGN" || stored === "USD") setDisplayState(stored);
+    if (typeof window === "undefined") return;
+    const c = localStorage.getItem(STORAGE_CURRENCY);
+    if (c === "NGN" || c === "USD") setDisplayState(c);
+    const b = localStorage.getItem(STORAGE_BALANCES);
+    if (b === "0") setShowBalancesState(false);
   }, []);
 
   const setDisplay = (c: Currency) => {
     setDisplayState(c);
-    if (typeof window !== "undefined") localStorage.setItem(STORAGE_KEY, c);
+    if (typeof window !== "undefined") localStorage.setItem(STORAGE_CURRENCY, c);
+  };
+
+  const setShowBalances = (v: boolean) => {
+    setShowBalancesState(v);
+    if (typeof window !== "undefined") localStorage.setItem(STORAGE_BALANCES, v ? "1" : "0");
   };
 
   return (
-    <CurrencyContext.Provider value={{ display, setDisplay, fxRate }}>
+    <CurrencyContext.Provider value={{ display, setDisplay, fxRate, showBalances, setShowBalances }}>
       {children}
     </CurrencyContext.Provider>
   );

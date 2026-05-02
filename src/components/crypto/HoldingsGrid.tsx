@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatPercent } from "@/lib/format";
-import { MoneyDisplay } from "@/components/dashboard/MoneyDisplay";
+import { MoneyDisplay, PrivateText } from "@/components/dashboard/MoneyDisplay";
 import { cn } from "@/lib/utils";
 import type { Holding } from "./CryptoClient";
 
@@ -91,7 +91,9 @@ export function HoldingsGrid({ holdings }: { holdings: Holding[] }) {
                     <MoneyDisplay amount={h.costBasis} from="USD" className="text-2xl font-bold" />
                   )}
                   <div className="text-xs text-muted-foreground font-mono">
-                    {h.amount.toLocaleString("en-US", { maximumFractionDigits: 6 })} {h.symbol}
+                    <PrivateText className="text-xs">
+                      {h.amount.toLocaleString("en-US", { maximumFractionDigits: 6 })}
+                    </PrivateText>{" "}{h.symbol}
                     {live && <span className="ml-2">@ <MoneyDisplay amount={live.price} from="USD" className="text-xs" /></span>}
                   </div>
                 </div>
@@ -109,7 +111,7 @@ export function HoldingsGrid({ holdings }: { holdings: Holding[] }) {
                     <span className="text-xs uppercase tracking-wide opacity-70">P/L</span>
                     <span className="flex items-center gap-2">
                       <MoneyDisplay amount={pl} from="USD" className={cn("text-sm", positive ? "text-emerald-400" : "text-rose-400")} />
-                      {plPct !== null && <span className="opacity-80">({formatPercent(plPct)})</span>}
+                      {plPct !== null && <span className="opacity-80">(<PrivateText fallback="••">{formatPercent(plPct)}</PrivateText>)</span>}
                     </span>
                   </div>
                 )}

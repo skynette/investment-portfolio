@@ -6,7 +6,7 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { formatPercent } from "@/lib/format";
-import { MoneyDisplay } from "./MoneyDisplay";
+import { MoneyDisplay, PrivateText } from "./MoneyDisplay";
 import { cn } from "@/lib/utils";
 
 export type AssetRow = {
@@ -69,7 +69,9 @@ export function AssetsTable({ rows }: { rows: AssetRow[] }) {
                     <MoneyDisplay amount={r.costBasis} from="USD" />
                   )}
                   <span className="text-xs text-muted-foreground font-mono">
-                    {r.amount.toLocaleString("en-US", { maximumFractionDigits: 4 })} {r.symbol}
+                    <PrivateText className="text-xs">
+                      {r.amount.toLocaleString("en-US", { maximumFractionDigits: 4 })}
+                    </PrivateText>{" "}{r.symbol}
                   </span>
                 </div>
               </TableCell>
@@ -84,7 +86,7 @@ export function AssetsTable({ rows }: { rows: AssetRow[] }) {
                   )}>
                     <MoneyDisplay amount={r.pl} from="USD" className={r.pl < 0 ? "text-rose-400" : "text-emerald-400"} />
                     {r.plPct !== null && (
-                      <span className="text-xs">{formatPercent(r.plPct)}</span>
+                      <span className="text-xs"><PrivateText fallback="••" className="text-xs">{formatPercent(r.plPct)}</PrivateText></span>
                     )}
                   </div>
                 )}

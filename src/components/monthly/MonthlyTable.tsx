@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { formatPercent, type Currency } from "@/lib/format";
-import { MoneyDisplay } from "@/components/dashboard/MoneyDisplay";
+import { MoneyDisplay, PrivateText } from "@/components/dashboard/MoneyDisplay";
 import { updateMonthlyEntry, deleteMonthlyEntry } from "@/server/actions/monthly";
 
 type Row = {
@@ -112,13 +112,16 @@ export function MonthlyTable({ rows }: { rows: Row[] }) {
 
               <TableCell className="text-right">
                 {target > 0 ? (
-                  <span className={
-                    actual >= target ? "text-emerald-400 font-mono"
-                    : actual === 0 ? "text-muted-foreground font-mono"
-                    : "text-amber-400 font-mono"
-                  }>
+                  <PrivateText
+                    fallback="••%"
+                    className={
+                      actual >= target ? "text-emerald-400"
+                      : actual === 0 ? "text-muted-foreground"
+                      : "text-amber-400"
+                    }
+                  >
                     {formatPercent(actual / target)}
-                  </span>
+                  </PrivateText>
                 ) : "—"}
               </TableCell>
 
@@ -137,7 +140,7 @@ export function MonthlyTable({ rows }: { rows: Row[] }) {
           <TableCell className="text-right font-semibold"><MoneyDisplay amount={totalTarget} from={currency} className="font-semibold" /></TableCell>
           <TableCell className="text-right font-semibold"><MoneyDisplay amount={totalActual} from={currency} className="font-semibold" /></TableCell>
           <TableCell className="text-right font-semibold">
-            {totalTarget > 0 ? formatPercent(totalActual / totalTarget) : "—"}
+            {totalTarget > 0 ? <PrivateText fallback="••%" className="font-semibold">{formatPercent(totalActual / totalTarget)}</PrivateText> : "—"}
           </TableCell>
           <TableCell />
         </TableRow>

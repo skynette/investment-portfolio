@@ -3,7 +3,7 @@
 import { ArrowDownRight, ArrowUpRight, TrendingUp, TrendingDown } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatPercent } from "@/lib/format";
-import { MoneyDisplay } from "./MoneyDisplay";
+import { MoneyDisplay, PrivateText } from "./MoneyDisplay";
 import { cn } from "@/lib/utils";
 
 export type Performer = {
@@ -54,7 +54,9 @@ function PerformerCard({
               isPositive ? "text-emerald-400" : "text-rose-400",
             )}>
               <ArrowIcon className="h-4 w-4" />
-              {formatPercent(performer.plPct)}
+              <PrivateText fallback="••%" className={cn("text-sm", isPositive ? "text-emerald-400" : "text-rose-400")}>
+                {formatPercent(performer.plPct)}
+              </PrivateText>
               <span className="ml-2 text-muted-foreground">
                 (<MoneyDisplay amount={performer.plUsd} from="USD" className={cn("text-sm", isPositive ? "text-emerald-400" : "text-rose-400")} />)
               </span>
