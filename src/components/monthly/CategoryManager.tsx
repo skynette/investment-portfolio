@@ -100,7 +100,7 @@ export function CategoryManager({
               >
                 {c.isActive ? "Active" : "Inactive"}
               </Button>
-              <Button variant="ghost" size="icon" onClick={() => handleDelete(c.id)}>
+              <Button variant="ghost" onClick={() => handleDelete(c.id)} className="h-10 w-10 p-0" aria-label="Delete category">
                 <Trash2 className="h-4 w-4" />
               </Button>
             </div>

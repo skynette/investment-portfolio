@@ -12,15 +12,25 @@ export function MonthSelector({
   onChange: (next: YearMonth) => void;
 }) {
   return (
-    <div className="flex items-center gap-2">
-      <Button variant="ghost" size="icon" onClick={() => onChange(previousMonth(value))}>
-        <ChevronLeft className="h-4 w-4" />
+    <div className="flex items-center gap-1 rounded-md border bg-background/40">
+      <Button
+        variant="ghost"
+        onClick={() => onChange(previousMonth(value))}
+        className="h-11 w-11 p-0"
+        aria-label="Previous month"
+      >
+        <ChevronLeft className="h-5 w-5" />
       </Button>
-      <span className="min-w-[140px] text-center text-lg font-medium">
+      <span className="min-w-[140px] px-2 text-center text-base font-medium">
         {formatYearMonth(value)}
       </span>
-      <Button variant="ghost" size="icon" onClick={() => onChange(nextMonth(value))}>
-        <ChevronRight className="h-4 w-4" />
+      <Button
+        variant="ghost"
+        onClick={() => onChange(nextMonth(value))}
+        className="h-11 w-11 p-0"
+        aria-label="Next month"
+      >
+        <ChevronRight className="h-5 w-5" />
       </Button>
     </div>
   );

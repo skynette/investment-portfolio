@@ -73,7 +73,7 @@ export function TransactionTable({ transactions }: { transactions: TxRow[] }) {
                 <TableCell className="text-right"><PrivateText>{t.amount.toLocaleString("en-US", { maximumFractionDigits: 6 })}</PrivateText></TableCell>
                 <TableCell className="text-right">{t.pricePerUnit === null ? "—" : <MoneyDisplay amount={t.pricePerUnit} from="USD" />}</TableCell>
                 <TableCell className="text-right">{t.totalUsd === null ? "—" : <MoneyDisplay amount={t.totalUsd} from="USD" />}</TableCell>
-                <TableCell><Button variant="ghost" size="icon" onClick={() => remove(t.id)}><Trash2 className="h-4 w-4" /></Button></TableCell>
+                <TableCell><Button variant="ghost" onClick={() => remove(t.id)} className="h-10 w-10 p-0" aria-label="Delete transaction"><Trash2 className="h-4 w-4" /></Button></TableCell>
               </TableRow>
             ))}
           </TableBody>
