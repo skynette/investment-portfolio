@@ -81,6 +81,7 @@ Other local-only files (gitignored):
 | `DATABASE_URL` | yes | `file:./portfolio.db` | SQLite path. Keep the `file:` prefix. |
 | `CMC_API_KEY` | for live prices | — | CoinMarketCap Pro API key |
 | `FX_API_URL` | no | `https://open.er-api.com/v6/latest/USD` | Any endpoint returning `{rates: {NGN: number}}` |
+| `NEXT_DEV_ORIGINS` | no | — | Comma-separated LAN IPs allowed to access `next dev` (needed when using your phone on the same WiFi or hotspot). Find yours with `ipconfig getifaddr en0`. |
 
 ## Customising for a different base currency
 
