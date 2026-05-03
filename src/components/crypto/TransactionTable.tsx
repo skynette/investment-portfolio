@@ -44,7 +44,7 @@ export function TransactionTable({ transactions }: { transactions: TxRow[] }) {
         <span className="text-sm text-muted-foreground">{filtered.length} transactions</span>
       </div>
 
-      <div className="rounded-md border">
+      <div className="rounded-md border overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>

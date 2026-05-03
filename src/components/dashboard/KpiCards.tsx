@@ -41,7 +41,7 @@ export function KpiCards({
   }> = [
     {
       label: "This month invested",
-      value: <MoneyDisplay amount={monthActual} from="NGN" className="text-3xl font-bold" />,
+      value: <MoneyDisplay amount={monthActual} from="NGN" className="text-2xl sm:text-3xl font-bold" />,
       sub: (
         <span className="text-xs text-muted-foreground">
           of <MoneyDisplay amount={monthTarget} from="NGN" compact /> target
@@ -54,7 +54,7 @@ export function KpiCards({
       label: "Month progress",
       value: (
         <div className="flex items-end gap-2">
-          <PrivateText fallback="••%" className="text-3xl font-bold">{formatPercent(monthPct)}</PrivateText>
+          <PrivateText fallback="••%" className="text-2xl sm:text-3xl font-bold">{formatPercent(monthPct)}</PrivateText>
           {monthPct >= 1 ? (
             <ArrowUpRight className="mb-1 h-5 w-5 text-emerald-500" />
           ) : null}
@@ -66,7 +66,7 @@ export function KpiCards({
     },
     {
       label: "Crypto value",
-      value: <MoneyDisplay amount={cryptoValueUsd} from="USD" className="text-3xl font-bold" />,
+      value: <MoneyDisplay amount={cryptoValueUsd} from="USD" className="text-2xl sm:text-3xl font-bold" />,
       sub: (
         <span className={cn(
           "inline-flex items-center gap-1 text-xs font-mono",
@@ -81,7 +81,7 @@ export function KpiCards({
     },
     {
       label: "Total committed",
-      value: <MoneyDisplay amount={totalCommittedInDisplay} from={display} className="text-3xl font-bold" />,
+      value: <MoneyDisplay amount={totalCommittedInDisplay} from={display} className="text-2xl sm:text-3xl font-bold" />,
       sub: (
         <span className="text-xs text-muted-foreground">
           monthly + crypto cost basis

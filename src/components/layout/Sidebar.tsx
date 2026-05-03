@@ -1,9 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, CalendarDays, Coins, Settings } from "lucide-react";
+import { LayoutDashboard, CalendarDays, Coins, Settings, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ThemeToggle } from "./ThemeToggle";
 import { CurrencyToggle } from "./CurrencyToggle";
 import { BalanceVisibilityToggle } from "./BalanceVisibilityToggle";
@@ -15,10 +18,10 @@ const navItems = [
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 
-export function Sidebar() {
+function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   return (
-    <aside className="flex h-screen w-56 flex-col border-r bg-background">
+    <>
       <div className="flex items-center justify-between p-4">
         <h1 className="text-lg font-semibold">Portfolio</h1>
         <ThemeToggle />
@@ -30,6 +33,7 @@ export function Sidebar() {
             <Link
               key={href}
               href={href}
+              onClick={onNavigate}
               className={cn(
                 "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
                 active
@@ -50,6 +54,32 @@ export function Sidebar() {
           <CurrencyToggle />
         </div>
       </div>
+    </>
+  );
+}
+
+export function Sidebar() {
+  return (
+    <aside className="hidden md:flex h-screen sticky top-0 w-56 flex-col border-r bg-background">
+      <SidebarContent />
     </aside>
+  );
+}
+
+export function MobileTopBar() {
+  const [open, setOpen] = useState(false);
+  return (
+    <header className="flex md:hidden items-center justify-between border-b bg-background/80 backdrop-blur px-4 py-3 sticky top-0 z-40">
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetTrigger render={<Button variant="ghost" size="icon" aria-label="Open menu" />}>
+          <Menu className="h-5 w-5" />
+        </SheetTrigger>
+        <SheetContent side="left" className="w-64 p-0 flex flex-col">
+          <SidebarContent onNavigate={() => setOpen(false)} />
+        </SheetContent>
+      </Sheet>
+      <h1 className="text-base font-semibold">Portfolio</h1>
+      <ThemeToggle />
+    </header>
   );
 }

@@ -58,12 +58,12 @@ export function MonthlyClient({
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="space-y-3">
         <div>
           <h2 className="text-2xl font-bold">Monthly Investments</h2>
           <p className="text-sm text-muted-foreground">{formatYearMonth(initialYearMonth)}</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <MonthSelector value={initialYearMonth} onChange={onChangeMonth} />
           <MonthlyCopyButton rows={rows} ym={initialYearMonth} />
           <MonthlyExportButton />
@@ -83,19 +83,19 @@ export function MonthlyClient({
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <SummaryCard
           label="Invested this month"
-          value={<MoneyDisplay amount={totalActual} from="NGN" compact className="text-3xl font-bold" />}
+          value={<MoneyDisplay amount={totalActual} from="NGN" compact className="text-2xl sm:text-3xl font-bold" />}
           icon={Wallet}
           accent="violet"
         />
         <SummaryCard
           label="Target"
-          value={<MoneyDisplay amount={totalTarget} from="NGN" compact className="text-3xl font-bold" />}
+          value={<MoneyDisplay amount={totalTarget} from="NGN" compact className="text-2xl sm:text-3xl font-bold" />}
           icon={Target}
           accent="amber"
         />
         <SummaryCard
           label="Progress"
-          value={<PrivateText fallback="••%" className="text-3xl font-bold">{formatPercent(pct)}</PrivateText>}
+          value={<PrivateText fallback="••%" className="text-2xl sm:text-3xl font-bold">{formatPercent(pct)}</PrivateText>}
           icon={TrendingUp}
           accent={pct >= 1 ? "green" : "amber"}
           progress={pct}
@@ -103,7 +103,9 @@ export function MonthlyClient({
       </div>
 
       <Card className="overflow-hidden border-border/60 bg-card/60 backdrop-blur">
-        <MonthlyTable rows={rows} />
+        <div className="overflow-x-auto">
+          <MonthlyTable rows={rows} />
+        </div>
       </Card>
     </div>
   );

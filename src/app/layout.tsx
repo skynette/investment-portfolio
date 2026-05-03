@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/layout/ThemeProvider";
-import { Sidebar } from "@/components/layout/Sidebar";
+import { Sidebar, MobileTopBar } from "@/components/layout/Sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { CurrencyProvider } from "@/components/layout/CurrencyContext";
 import { getUsdToNgn } from "@/server/lib/fx";
@@ -39,7 +39,10 @@ export default async function RootLayout({
           <CurrencyProvider fxRate={fxRate}>
             <div className="flex min-h-screen">
               <Sidebar />
-              <main className="flex-1 overflow-auto p-8">{children}</main>
+              <div className="flex flex-1 min-w-0 flex-col">
+                <MobileTopBar />
+                <main className="flex-1 overflow-auto p-4 md:p-8">{children}</main>
+              </div>
             </div>
             <Toaster />
           </CurrencyProvider>

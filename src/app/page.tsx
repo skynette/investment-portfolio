@@ -145,7 +145,7 @@ export default async function DashboardPage({
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="space-y-3 sm:flex sm:flex-wrap sm:items-center sm:justify-between sm:gap-3 sm:space-y-0">
         <div>
           <h2 className="text-2xl font-bold">Dashboard</h2>
           <p className="text-sm text-muted-foreground">Showing monthly metrics for {formatYearMonth(ym)}</p>

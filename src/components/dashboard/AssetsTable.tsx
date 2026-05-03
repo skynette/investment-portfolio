@@ -35,6 +35,7 @@ export function AssetsTable({ rows }: { rows: AssetRow[] }) {
 
   return (
     <Card className="overflow-hidden border-border/60 bg-card/60 backdrop-blur">
+      <div className="overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow className="hover:bg-transparent">
@@ -95,6 +96,7 @@ export function AssetsTable({ rows }: { rows: AssetRow[] }) {
           ))}
         </TableBody>
       </Table>
+      </div>
     </Card>
   );
 }

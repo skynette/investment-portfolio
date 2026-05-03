@@ -53,12 +53,12 @@ export function CryptoClient({
   const positive = summary.plUsd >= 0;
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="space-y-3">
         <div>
           <h2 className="text-2xl font-bold">Crypto</h2>
           <p className="text-sm text-muted-foreground">{holdings.length} holdings · {summary.txCount} transactions</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <CryptoCopyButton holdings={holdings} summary={summary} />
           <CryptoExportButton />
           <ImportCsvDialog />
@@ -69,13 +69,13 @@ export function CryptoClient({
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <SummaryCard
           label="Portfolio value"
-          value={<MoneyDisplay amount={summary.valueUsd} from="USD" className="text-3xl font-bold" />}
+          value={<MoneyDisplay amount={summary.valueUsd} from="USD" className="text-2xl sm:text-3xl font-bold" />}
           icon={Wallet}
           accent="violet"
         />
         <SummaryCard
           label="Cost basis"
-          value={<MoneyDisplay amount={summary.costUsd} from="USD" className="text-3xl font-bold" />}
+          value={<MoneyDisplay amount={summary.costUsd} from="USD" className="text-2xl sm:text-3xl font-bold" />}
           icon={Coins}
           accent="muted"
         />
@@ -85,7 +85,7 @@ export function CryptoClient({
             <MoneyDisplay
               amount={summary.plUsd}
               from="USD"
-              className={cn("text-3xl font-bold", positive ? "text-emerald-400" : "text-rose-400")}
+              className={cn("text-2xl sm:text-3xl font-bold", positive ? "text-emerald-400" : "text-rose-400")}
             />
           }
           icon={positive ? ArrowUpRight : ArrowDownRight}
@@ -95,7 +95,7 @@ export function CryptoClient({
           label="Return"
           value={
             <PrivateText fallback="••%" className={cn(
-              "text-3xl font-bold",
+              "text-2xl sm:text-3xl font-bold",
               positive ? "text-emerald-400" : "text-rose-400",
             )}>{formatPercent(summary.plPct)}</PrivateText>
           }
