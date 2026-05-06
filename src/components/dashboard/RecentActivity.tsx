@@ -4,6 +4,7 @@ import { ArrowDownLeft, ArrowUpRight, Coins, Wallet } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MoneyDisplay, PrivateText } from "./MoneyDisplay";
 import type { Currency } from "@/lib/format";
+import { formatActivityDateTime } from "@/lib/dates";
 import { cn } from "@/lib/utils";
 
 export type ActivityItem =
@@ -39,7 +40,7 @@ export function RecentActivity({ items }: { items: ActivityItem[] }) {
                   </span>
                   <div className="min-w-0">
                     <div className="truncate text-sm font-medium">{item.label}</div>
-                    <div className="text-xs text-muted-foreground">{new Date(item.at).toLocaleString()}</div>
+                    <div className="text-xs text-muted-foreground">{formatActivityDateTime(item.at)}</div>
                   </div>
                 </div>
                 <div className="text-right">

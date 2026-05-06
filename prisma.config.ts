@@ -7,6 +7,8 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    url: process.env["DATABASE_URL"],
+    // Prisma 7 reads connection URLs from prisma.config.ts instead of schema.prisma.
+    // Use DIRECT_URL for CLI operations like db push/migrate, and DATABASE_URL at runtime.
+    url: process.env["DIRECT_URL"] ?? process.env["DATABASE_URL"],
   },
 });

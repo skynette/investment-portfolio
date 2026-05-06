@@ -1,5 +1,16 @@
 export type YearMonth = { year: number; month: number };
 
+const ACTIVITY_DATE_FORMATTER = new Intl.DateTimeFormat("en-GB", {
+  timeZone: "Africa/Lagos",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  hour12: false,
+});
+
 export function currentYearMonth(): YearMonth {
   const d = new Date();
   return { year: d.getFullYear(), month: d.getMonth() + 1 };
@@ -21,4 +32,8 @@ export function formatYearMonth({ year, month }: YearMonth): string {
     "July", "August", "September", "October", "November", "December",
   ];
   return `${monthNames[month - 1]} ${year}`;
+}
+
+export function formatActivityDateTime(value: string | Date): string {
+  return ACTIVITY_DATE_FORMATTER.format(new Date(value));
 }

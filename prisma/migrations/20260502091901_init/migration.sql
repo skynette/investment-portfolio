@@ -1,63 +1,76 @@
+-- CreateSchema
+CREATE SCHEMA IF NOT EXISTS "public";
+
 -- CreateTable
 CREATE TABLE "Category" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "currency" TEXT NOT NULL DEFAULT 'NGN',
-    "defaultMonthlyTarget" DECIMAL NOT NULL DEFAULT 0,
+    "defaultMonthlyTarget" DECIMAL(65,30) NOT NULL DEFAULT 0,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Category_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "MonthlyEntry" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" SERIAL NOT NULL,
     "categoryId" INTEGER NOT NULL,
     "year" INTEGER NOT NULL,
     "month" INTEGER NOT NULL,
-    "target" DECIMAL NOT NULL DEFAULT 0,
-    "actual" DECIMAL NOT NULL DEFAULT 0,
+    "target" DECIMAL(65,30) NOT NULL DEFAULT 0,
+    "actual" DECIMAL(65,30) NOT NULL DEFAULT 0,
     "note" TEXT,
-    "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "MonthlyEntry_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "MonthlyEntry_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "CryptoAsset" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" SERIAL NOT NULL,
     "symbol" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "cmcSymbol" TEXT NOT NULL,
-    "isActive" BOOLEAN NOT NULL DEFAULT true
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+
+    CONSTRAINT "CryptoAsset_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "CryptoTransaction" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" SERIAL NOT NULL,
     "assetId" INTEGER NOT NULL,
-    "occurredAt" DATETIME NOT NULL,
+    "occurredAt" TIMESTAMP(3) NOT NULL,
     "type" TEXT NOT NULL,
-    "pricePerUnit" DECIMAL,
-    "amount" DECIMAL NOT NULL,
-    "totalUsd" DECIMAL,
-    "fee" DECIMAL,
+    "pricePerUnit" DECIMAL(65,30),
+    "amount" DECIMAL(65,30) NOT NULL,
+    "totalUsd" DECIMAL(65,30),
+    "fee" DECIMAL(65,30),
     "feeCurrency" TEXT,
     "note" TEXT,
-    CONSTRAINT "CryptoTransaction_assetId_fkey" FOREIGN KEY ("assetId") REFERENCES "CryptoAsset" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+
+    CONSTRAINT "CryptoTransaction_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "FxRate" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" SERIAL NOT NULL,
     "base" TEXT NOT NULL,
     "quote" TEXT NOT NULL,
-    "rate" DECIMAL NOT NULL,
-    "fetchedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "rate" DECIMAL(65,30) NOT NULL,
+    "fetchedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "FxRate_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Setting" (
-    "key" TEXT NOT NULL PRIMARY KEY,
-    "value" TEXT NOT NULL
+    "key" TEXT NOT NULL,
+    "value" TEXT NOT NULL,
+
+    CONSTRAINT "Setting_pkey" PRIMARY KEY ("key")
 );
 
 -- CreateIndex
@@ -80,3 +93,9 @@ CREATE UNIQUE INDEX "CryptoTransaction_assetId_occurredAt_type_amount_totalUsd_k
 
 -- CreateIndex
 CREATE INDEX "FxRate_base_quote_fetchedAt_idx" ON "FxRate"("base", "quote", "fetchedAt");
+
+-- AddForeignKey
+ALTER TABLE "MonthlyEntry" ADD CONSTRAINT "MonthlyEntry_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "CryptoTransaction" ADD CONSTRAINT "CryptoTransaction_assetId_fkey" FOREIGN KEY ("assetId") REFERENCES "CryptoAsset"("id") ON DELETE CASCADE ON UPDATE CASCADE;
