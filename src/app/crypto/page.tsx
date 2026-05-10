@@ -4,6 +4,8 @@ import { computeHolding } from "@/server/lib/holdings";
 import { fetchPrices } from "@/server/lib/cmc";
 import { CryptoClient } from "@/components/crypto/CryptoClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function CryptoPage() {
   const [assets, txs] = await Promise.all([listAssets(), listTransactions()]);
 

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { formatMoney, formatPercent, type Currency } from "@/lib/format";
 import { useDisplayCurrency, convert } from "@/components/layout/CurrencyContext";
-import type { Holding } from "./CryptoClient";
+import type { Holding, LivePrice } from "./CryptoClient";
 
 type Summary = {
   valueUsd: number;
@@ -15,7 +15,15 @@ type Summary = {
   plPct: number;
 };
 
-export function CryptoCopyButton({ holdings, summary }: { holdings: Holding[]; summary: Summary }) {
+export function CryptoCopyButton({
+  holdings,
+  summary,
+  prices,
+}: {
+  holdings: Holding[];
+  summary: Summary;
+  prices: Record<string, LivePrice>;
+}) {
   const [pending, setPending] = useState(false);
   const { display, fxRate } = useDisplayCurrency();
 
@@ -32,10 +40,6 @@ export function CryptoCopyButton({ holdings, summary }: { holdings: Holding[]; s
     }
     setPending(true);
     try {
-      const symbols = holdings.map((h) => h.cmcSymbol).join(",");
-      const res = await fetch(`/api/prices?symbols=${symbols}`);
-      const prices: Record<string, { price: number; change24h: number }> = res.ok ? await res.json() : {};
-
       const lines: string[] = [];
       lines.push(`*Crypto Portfolio*`);
       lines.push("");

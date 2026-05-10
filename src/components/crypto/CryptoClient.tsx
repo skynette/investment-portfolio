@@ -1,8 +1,10 @@
 "use client";
 
-import { ArrowUpRight, ArrowDownRight, Coins, TrendingUp, Wallet } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { ArrowUpRight, ArrowDownRight, Coins, RefreshCw, TrendingUp, Wallet } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 import { HoldingsGrid } from "./HoldingsGrid";
 import { TransactionTable } from "./TransactionTable";
 import { AddTransactionDialog } from "./AddTransactionDialog";
@@ -36,6 +38,8 @@ export type TxRow = {
   note: string | null;
 };
 
+export type LivePrice = { price: number; change1h: number; change24h: number; change7d: number };
+
 export function CryptoClient({
   holdings, transactions, assets, summary,
 }: {
@@ -50,7 +54,58 @@ export function CryptoClient({
     txCount: number;
   };
 }) {
-  const positive = summary.plUsd >= 0;
+  const [prices, setPrices] = useState<Record<string, LivePrice>>({});
+  const [loading, setLoading] = useState(false);
+  const [hasFetched, setHasFetched] = useState(false);
+
+  const symbolsKey = holdings.map((h) => h.cmcSymbol).join(",");
+
+  const refresh = useCallback(async () => {
+    if (!symbolsKey) return;
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/prices?symbols=${symbolsKey}`);
+      if (res.ok) {
+        const data: Record<string, LivePrice> = await res.json();
+        setPrices(data);
+        setHasFetched(true);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [symbolsKey]);
+
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
+
+  // Once live prices arrive, recompute summary from them so KPI cards stay in
+  // sync with the per-asset cards. Until then, fall back to the server-rendered
+  // summary so the cards aren't blank on first paint.
+  const liveSummary = useMemo(() => {
+    if (!hasFetched) {
+      return {
+        valueUsd: summary.valueUsd,
+        costUsd: summary.costUsd,
+        plUsd: summary.plUsd,
+        plPct: summary.plPct,
+      };
+    }
+    let valueUsd = 0;
+    let costUsd = 0;
+    for (const h of holdings) {
+      costUsd += h.costBasis;
+      const live = prices[h.cmcSymbol];
+      if (live) valueUsd += h.amount * live.price;
+      else valueUsd += h.costBasis; // unknown price → neutral contribution
+    }
+    const plUsd = valueUsd - costUsd;
+    const plPct = costUsd > 0 ? plUsd / costUsd : 0;
+    return { valueUsd, costUsd, plUsd, plPct };
+  }, [hasFetched, holdings, prices, summary]);
+
+  const positive = liveSummary.plUsd >= 0;
+
   return (
     <div className="space-y-6">
       <div className="space-y-3">
@@ -59,7 +114,15 @@ export function CryptoClient({
           <p className="text-sm text-muted-foreground">{holdings.length} holdings · {summary.txCount} transactions</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <CryptoCopyButton holdings={holdings} summary={summary} />
+          <Button variant="outline" size="sm" onClick={refresh} disabled={loading}>
+            <RefreshCw className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+            Refresh prices
+          </Button>
+          <CryptoCopyButton
+            holdings={holdings}
+            summary={liveSummary}
+            prices={prices}
+          />
           <CryptoExportButton />
           <ImportCsvDialog />
           <AddTransactionDialog assets={assets} />
@@ -69,13 +132,13 @@ export function CryptoClient({
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <SummaryCard
           label="Portfolio value"
-          value={<MoneyDisplay amount={summary.valueUsd} from="USD" className="text-2xl sm:text-3xl font-bold" />}
+          value={<MoneyDisplay amount={liveSummary.valueUsd} from="USD" className="text-2xl sm:text-3xl font-bold" />}
           icon={Wallet}
           accent="violet"
         />
         <SummaryCard
           label="Cost basis"
-          value={<MoneyDisplay amount={summary.costUsd} from="USD" className="text-2xl sm:text-3xl font-bold" />}
+          value={<MoneyDisplay amount={liveSummary.costUsd} from="USD" className="text-2xl sm:text-3xl font-bold" />}
           icon={Coins}
           accent="muted"
         />
@@ -83,7 +146,7 @@ export function CryptoClient({
           label="All-time P/L"
           value={
             <MoneyDisplay
-              amount={summary.plUsd}
+              amount={liveSummary.plUsd}
               from="USD"
               className={cn("text-2xl sm:text-3xl font-bold", positive ? "text-emerald-400" : "text-rose-400")}
             />
@@ -97,7 +160,7 @@ export function CryptoClient({
             <PrivateText fallback="••%" className={cn(
               "text-2xl sm:text-3xl font-bold",
               positive ? "text-emerald-400" : "text-rose-400",
-            )}>{formatPercent(summary.plPct)}</PrivateText>
+            )}>{formatPercent(liveSummary.plPct)}</PrivateText>
           }
           icon={TrendingUp}
           accent={positive ? "green" : "red"}
@@ -110,7 +173,7 @@ export function CryptoClient({
           <TabsTrigger value="transactions">Transactions</TabsTrigger>
         </TabsList>
         <TabsContent value="holdings" className="mt-6">
-          <HoldingsGrid holdings={holdings} />
+          <HoldingsGrid holdings={holdings} prices={prices} loading={loading} />
         </TabsContent>
         <TabsContent value="transactions" className="mt-6">
           <TransactionTable transactions={transactions} />
