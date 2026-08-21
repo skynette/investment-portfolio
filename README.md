@@ -60,6 +60,20 @@ mkdir -p data && cp /path/to/your.csv data/transactions.csv
 npx tsx prisma/seed-crypto.ts
 ```
 
+To **update** an existing portfolio from a fresh CoinMarketCap export instead of
+seeding a fresh one, use the reconciler — it adds only the transactions you don't
+already have:
+
+```bash
+npm run db:reconcile:cmc -- /path/to/Joshua_transactions.csv          # dry run
+npm run db:reconcile:cmc -- /path/to/Joshua_transactions.csv --apply  # write
+```
+
+It matches a trade on `(symbol, type, amount, totalUsd)` within a 3-day window
+rather than on the exact timestamp. CMC records the *trade* time while rows you
+entered by hand carry the time you entered them, so timestamp matching reports
+trades you already own as new and doubles your holdings.
+
 The parser filters transactions older than `2025-05-19 11:20 UTC+1` by default. Edit `CUTOFF` in `src/server/lib/csv-parser.ts` if you want a different cutoff or none at all.
 
 ## Where is my data?

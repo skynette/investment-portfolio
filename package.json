@@ -9,7 +9,8 @@
     "start": "next start",
     "test": "vitest run",
     "test:watch": "vitest",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "db:reconcile:cmc": "tsx prisma/reconcile-cmc.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

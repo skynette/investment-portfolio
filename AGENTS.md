@@ -17,7 +17,8 @@ A Next.js 16 + Prisma 7 + Neon Postgres single-user investment tracker deployed 
 5. **Prisma client lives at `@/generated/prisma/client`**, not `@prisma/client`. Prisma 7 uses the new `prisma-client` generator.
 6. **`prisma/seed.ts` is committed and must stay generic.** No personal financial data ever. Personal seeds go in `prisma/seed.personal.ts` (gitignored).
 7. **shadcn here uses `@base-ui/react` (v4.6+), not Radix.** Triggers don't accept `asChild`; use `render={<Component />}` instead. See `AddTransactionDialog.tsx` for the pattern.
-8. **TDD for pure-logic files.** `holdings.ts`, `csv-parser.ts`, `cmc.ts`, `fx.ts`, `dates.ts`, `format.ts` all have tests in `src/tests/`. Update tests first when changing behaviour.
+8. **Never match CMC transactions on `occurredAt`.** CMC exports the trade time; rows added through the app carry the entry time. The `tx_dedupe` constraint keys on `occurredAt`, so it will not catch these — match on `(symbol, type, amount, totalUsd)` within a time window instead. See `prisma/reconcile-cmc.ts`.
+9. **TDD for pure-logic files.** `holdings.ts`, `csv-parser.ts`, `cmc.ts`, `fx.ts`, `dates.ts`, `format.ts` all have tests in `src/tests/`. Update tests first when changing behaviour.
 
 ## Directory map
 
@@ -26,6 +27,7 @@ A Next.js 16 + Prisma 7 + Neon Postgres single-user investment tracker deployed 
 | `prisma/schema.prisma` | 6 models: Category, MonthlyEntry, CryptoAsset, CryptoTransaction, FxRate, Setting |
 | `prisma/seed.ts` | Generic seed (committed) |
 | `prisma/seed-crypto.ts` | CSV import seed reading `data/transactions.csv` |
+| `prisma/reconcile-cmc.ts` | Idempotent CMC-export sync; dry run by default, `--apply` to write |
 | `src/app/` | App Router pages: `/` `/monthly` `/crypto` `/settings` `/api/prices` |
 | `src/server/actions/` | Server Actions for all DB writes |
 | `src/server/lib/db.ts` | Prisma client singleton (with `adapter-pg`) |
