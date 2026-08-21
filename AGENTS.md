@@ -6,7 +6,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Project: Investment Portfolio
 
-A self-hosted Next.js 16 + Prisma 7 + SQLite single-user investment tracker. Read `README.md` first for the user-facing overview.
+A Next.js 16 + Prisma 7 + Neon Postgres single-user investment tracker deployed on Vercel. Read `README.md` first for the user-facing overview.
 
 ## Critical rules for any code change
 
@@ -28,7 +28,7 @@ A self-hosted Next.js 16 + Prisma 7 + SQLite single-user investment tracker. Rea
 | `prisma/seed-crypto.ts` | CSV import seed reading `data/transactions.csv` |
 | `src/app/` | App Router pages: `/` `/monthly` `/crypto` `/settings` `/api/prices` |
 | `src/server/actions/` | Server Actions for all DB writes |
-| `src/server/lib/db.ts` | Prisma client singleton (with `adapter-better-sqlite3`) |
+| `src/server/lib/db.ts` | Prisma client singleton (with `adapter-pg`) |
 | `src/server/lib/holdings.ts` | Pure: `computeHolding(txs) → {amount, costBasis, avgCost}` |
 | `src/server/lib/csv-parser.ts` | Pure: CSV → `ParsedTx[]`, with `CUTOFF` filter |
 | `src/server/lib/cmc.ts` | CoinMarketCap client + 60s in-memory cache |
@@ -49,7 +49,8 @@ A self-hosted Next.js 16 + Prisma 7 + SQLite single-user investment tracker. Rea
 - **`startTransition(async () => { return toast.error("...") })`** breaks build under React 19. Wrap as `if (!ok) { toast.error("..."); return; }` instead.
 - **Recharts `formatter={(v: number) => …}`** breaks under v3 strict types. Use `formatter={(v) => Number(v ?? 0).toFixed(2)}`.
 - **Base UI `Select.onValueChange`** can return `null`; coerce with `(v) => setX(v ?? "default")`.
-- **Prisma adapter URL** strips the `file:` prefix for SQLite: see `dbPath()` in `src/server/lib/db.ts`.
+- **Two connection strings.** `DATABASE_URL` is Neon's pooled endpoint (`-pooler` host, app runtime); `DIRECT_URL` is the direct endpoint (`prisma migrate` only). The app reads `DATABASE_URL` and nothing else.
+- **Vercel env vars are separate from `.env`.** Changing one does not change the other, and neither takes effect until a redeploy.
 - **The currency provider is in the root layout.** It needs `fxRate` server-side at every navigation — don't move it to a page.
 - **Editable cells must show native currency in edit mode**, otherwise typing a USD amount stores it as NGN. See `MonthlyTable.tsx`.
 

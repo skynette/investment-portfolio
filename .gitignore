@@ -51,3 +51,4 @@ prisma/seed.personal.ts
 /portfolio.db-journal
 
 /src/generated/prisma
+backups/

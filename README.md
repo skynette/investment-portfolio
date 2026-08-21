@@ -1,8 +1,8 @@
 # Investment Portfolio
 
-A self-hosted, single-user investment tracker for **monthly contributions** (in any local currency) and **crypto holdings** (with live prices and P/L). Runs entirely on your machine, stores data in a single SQLite file, and uses CoinMarketCap for live crypto prices.
+A self-hosted, single-user investment tracker for **monthly contributions** (in any local currency) and **crypto holdings** (with live prices and P/L). Deployed on Vercel, stores data in Neon Postgres, and uses CoinMarketCap for live crypto prices.
 
-> No accounts. No cloud. No telemetry. Your portfolio file is just `portfolio.db` on your disk.
+> Single-user. No accounts, no telemetry. Your data lives in your own Neon database.
 
 ---
 
@@ -20,7 +20,7 @@ A self-hosted, single-user investment tracker for **monthly contributions** (in 
 
 - **Next.js 16** (App Router, Turbopack)
 - **TypeScript**
-- **Prisma 7** + **SQLite** via `@prisma/adapter-better-sqlite3`
+- **Prisma 7** + **Neon Postgres** via `@prisma/adapter-pg`
 - **shadcn/ui** components (built on `@base-ui/react`) + **Tailwind CSS 4**
 - **Recharts** for charts
 - **Vitest** for unit tests
@@ -64,10 +64,18 @@ The parser filters transactions older than `2025-05-19 11:20 UTC+1` by default. 
 
 ## Where is my data?
 
-Everything lives in **`portfolio.db`** at the project root — a single SQLite file. Back it up by copying it. Restore by replacing it. It's gitignored.
+Everything lives in your **Neon Postgres** database. Neon keeps automatic
+point-in-time history, and you can branch or export from the Neon console.
+
+`DATABASE_URL` must be Neon's **pooled** endpoint (the `-pooler` host) — that is
+what the app reads at runtime. `DIRECT_URL` must be the **direct** endpoint (no
+`-pooler`) and is used only by `prisma migrate`.
+
+> These are also set as Vercel environment variables for Production and Preview.
+> Changing `.env` alone does not affect the deployed site — update both, then redeploy.
 
 Other local-only files (gitignored):
-- `.env` — your CMC API key and DB path
+- `.env` — your CMC API key and database URLs
 - `data/` — CSV imports
 - `prisma/seed.personal.ts` — your custom seed if you write one
 - `*.private.csv` — any CSV you mark private
@@ -78,7 +86,8 @@ Other local-only files (gitignored):
 
 | Variable | Required | Default | Description |
 |---|---|---|---|
-| `DATABASE_URL` | yes | `file:./portfolio.db` | SQLite path. Keep the `file:` prefix. |
+| `DATABASE_URL` | yes | — | Neon **pooled** connection string (`-pooler` host) |
+| `DIRECT_URL` | yes | — | Neon **direct** connection string, for `prisma migrate` |
 | `CMC_API_KEY` | for live prices | — | CoinMarketCap Pro API key |
 | `FX_API_URL` | no | `https://open.er-api.com/v6/latest/USD` | Any endpoint returning `{rates: {NGN: number}}` |
 | `NEXT_DEV_ORIGINS` | no | — | Comma-separated LAN IPs allowed to access `next dev` (needed when using your phone on the same WiFi or hotspot). Find yours with `ipconfig getifaddr en0`. |

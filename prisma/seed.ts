@@ -12,14 +12,14 @@
  */
 import "dotenv/config";
 import { PrismaClient } from "../src/generated/prisma/client";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaPg } from "@prisma/adapter-pg";
 
-function dbPath() {
-  const url = process.env.DATABASE_URL ?? "file:./portfolio.db";
-  return url.startsWith("file:") ? url.slice("file:".length) : url;
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) {
+  throw new Error("DATABASE_URL is not set");
 }
 
-const adapter = new PrismaBetterSqlite3({ url: dbPath() });
+const adapter = new PrismaPg({ connectionString });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {

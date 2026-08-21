@@ -31,7 +31,7 @@ export function SettingsClient() {
       <CardContent className="relative space-y-3">
         <p className="text-sm text-muted-foreground">
           Permanently delete all categories, monthly entries, crypto assets, and transactions.
-          The database file (<code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">portfolio.db</code>) is preserved — only its contents are wiped.
+          The database itself is preserved — only its contents are wiped.
         </p>
         <Button variant="destructive" onClick={wipe} disabled={pending}>
           <Database className="mr-2 h-4 w-4" />
