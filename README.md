@@ -94,6 +94,24 @@ Other local-only files (gitignored):
 - `prisma/seed.personal.ts` — your custom seed if you write one
 - `*.private.csv` — any CSV you mark private
 
+## Backups
+
+```bash
+npm run db:backup                                            # -> backups/backup-<timestamp>.json
+npm run db:restore -- backups/backup-<stamp>.json            # dry run
+npm run db:restore -- backups/backup-<stamp>.json --apply    # DESTRUCTIVE
+```
+
+Backups are plain JSON and need no `pg_dump`, so there is no client/server
+version to match. `numeric` columns are kept as strings so crypto amounts keep
+full precision. `backups/` is gitignored — these files hold your real portfolio,
+so keep them off the public repo.
+
+Row data only, not schema. To rebuild from scratch: create the database, run
+`prisma migrate deploy`, then restore. `--apply` truncates every table first and
+runs inside a single transaction, so a failure part-way rolls back rather than
+leaving a half-restored database.
+
 ## Configuration
 
 `.env` keys:

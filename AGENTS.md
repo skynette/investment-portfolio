@@ -28,6 +28,7 @@ A Next.js 16 + Prisma 7 + Neon Postgres single-user investment tracker deployed 
 | `prisma/seed.ts` | Generic seed (committed) |
 | `prisma/seed-crypto.ts` | CSV import seed reading `data/transactions.csv` |
 | `prisma/reconcile-cmc.ts` | Idempotent CMC-export sync; dry run by default, `--apply` to write |
+| `prisma/backup-db.ts` / `restore-db.ts` | JSON backup + restore; share `tables.ts` for FK-safe ordering |
 | `src/app/` | App Router pages: `/` `/monthly` `/crypto` `/settings` `/api/prices` |
 | `src/server/actions/` | Server Actions for all DB writes |
 | `src/server/lib/db.ts` | Prisma client singleton (with `adapter-pg`) |
@@ -37,6 +38,8 @@ A Next.js 16 + Prisma 7 + Neon Postgres single-user investment tracker deployed 
 | `src/server/lib/fx.ts` | FX fetch + 1h DB cache, with injectable fetcher for tests |
 | `src/components/layout/CurrencyContext.tsx` | Global NGN/USD toggle. `convert()` lives here. |
 | `src/components/dashboard/MoneyDisplay.tsx` | Universal money component — use this everywhere |
+
+- **Scripts in `prisma/` run work at import time.** Never import one from another — the imported script's `main()` executes. Shared constants live in `prisma/tables.ts`. This bit once: `restore-db.ts` importing `TABLES` from `backup-db.ts` silently overwrote the backup file mid-restore.
 
 ## Editing workflow
 
